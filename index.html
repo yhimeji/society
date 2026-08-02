@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社会チャレンジ（縄文時代と弥生時代）</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:#f3f7ff;
+    color:#333;
+}
+
+header{
+    background:linear-gradient(135deg,#4facfe,#00c6ff);
+    color:white;
+    text-align:center;
+    padding:25px 15px;
+}
+
+header h1{
+    margin:0;
+    font-size:1.8rem;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    padding:15px;
+}
+
+.question{
+    background:white;
+    margin-bottom:20px;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.question h3{
+    margin-top:0;
+    line-height:1.5;
+}
+
+.option{
+    width:100%;
+    margin:8px 0;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#eaf2ff;
+    font-size:1rem;
+    text-align:left;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#d5e6ff;
+}
+
+.option:disabled{
+    cursor:not-allowed;
+}
+
+.correct{
+    color:#0a8f3e;
+    font-weight:bold;
+    margin-top:12px;
+}
+
+.incorrect{
+    color:#d93025;
+    font-weight:bold;
+    margin-top:12px;
+}
+
+.finish-btn{
+    width:100%;
+    padding:16px;
+    font-size:1.1rem;
+    border:none;
+    border-radius:12px;
+    background:#4caf50;
+    color:white;
+    font-weight:bold;
+    margin-bottom:30px;
+}
+
+.finish-btn:disabled{
+    background:#999;
+}
+
+#resultPage{
+    display:none;
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    margin-bottom:40px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,0.12);
+}
+
+.score{
+    font-size:56px;
+    color:#2196f3;
+    font-weight:bold;
+}
+
+.message{
+    font-size:28px;
+    margin-top:15px;
+}
+
+.note{
+    margin-top:25px;
+    font-size:14px;
+    color:#666;
+}
+
+.retry-btn{
+    padding:14px 24px;
+    font-size:16px;
+    border:none;
+    border-radius:10px;
+    background:#ff9800;
+    color:white;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+.footer{
+    text-align:center;
+    color:#888;
+    margin:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎯 社会チャレンジ</h1>
+    <p>縄文時代・弥生時代（全10問）</p>
+    <p>～縄文どき♪弥生どき♪どっちが好き？・・・どっちもドキ</p>
+</header>
+
+<div class="container">
+    <div id="quizContainer"></div>
+
+    <button id="finishButton" class="finish-btn" disabled>
+        結果を見る
+    </button>
+
+    <div id="resultPage">
+        <h2>結果発表</h2>
+
+        <div class="score" id="score"></div>
+
+        <div class="message" id="message"></div>
+
+        <p id="detail"></p>
+
+        <div class="note">
+            📸 この結果画面をスクリーンショットに保存して、おうちの人に見せよう！
+        </div>
+
+        <button class="retry-btn" onclick="location.reload()">
+            もう一度挑戦する
+        </button>
+    </div>
+</div>
+
+<div class="footer">
+    がんばって満点を目指そう！
+</div>
+
+<script>
+
+const questions = [
+ 
+{
+q:"① 縄文時代の人々が主に使っていた土器はどれですか？",
+choices:[
+"縄文土器",
+"弥生土器",
+"須恵器",
+"埴輪"
+],
+answer:0
+},
+ 
+{
+q:"② 縄文時代の人々はどのようなくらしをしていましたか？",
+choices:[
+"狩りや採集",
+"稲作中心",
+"工場で働く",
+"海外貿易"
+],
+answer:0
+},
+ 
+{
+q:"③ 縄文土器の特徴として正しいものはどれですか？",
+choices:[
+"表面に縄目模様がある",
+"金属でできている",
+"表面がつるつるしている",
+"紫色をしている"
+],
+answer:0
+},
+ 
+{
+q:"④ 弥生時代に始まったことはどれですか？",
+choices:[
+"稲作",
+"自動車づくり",
+"鎌倉幕府",
+"外国旅行"
+],
+answer:0
+},
+ 
+{
+q:"⑤ 米づくりが広まったことで、人々のくらしはどうなりましたか？",
+choices:[
+"安定した",
+"山奥へ移動した",
+"魚を食べなくなった",
+"火を使わなくなった"
+],
+answer:0
+},
+ 
+{
+q:"⑥ 弥生時代によく使われた土器はどれですか？",
+choices:[
+"縄文土器",
+"埴輪",
+"弥生土器",
+"須恵器"
+],
+answer:2
+},
+ 
+{
+q:"⑦ 稲の穂を切るために使われた道具はどれですか？",
+choices:[
+"石包丁",
+"鉄砲",
+"コンバイン",
+"刀"
+],
+answer:0
+},
+ 
+{
+q:"⑧ 弥生時代の人々が米をたくさんたくわえるために作った建物はどれですか？",
+choices:[
+"高床倉庫",
+"天守閣",
+"寺院",
+"学校"
+],
+answer:0
+},
+ 
+{
+q:"⑨ 中国の歴史書に登場する、弥生時代の日本の国はどれですか？",
+choices:[
+"大和朝廷",
+"邪馬台国",
+"江戸幕府",
+"鎌倉幕府"
+],
+answer:1
+},
+ 
+{
+q:"⑩ 邪馬台国を治めていた女王はだれですか？",
+choices:[
+"卑弥呼",
+"推古天皇",
+"紫式部",
+"持統天皇"
+],
+answer:0
+}
+];
+
+let score = 0;
+let answered = 0;
+
+const quizContainer =
+document.getElementById("quizContainer");
+
+questions.forEach((q,index)=>{
+
+const div = document.createElement("div");
+div.className = "question";
+
+let html = `<h3>${q.q}</h3>`;
+
+q.choices.forEach((choice,i)=>{
+html += `
+<button class="option"
+onclick="checkAnswer(${index},${i},this)">
+${choice}
+</button>`;
+});
+
+html += `<div id="result-${index}"></div>`;
+
+div.innerHTML = html;
+quizContainer.appendChild(div);
+
+});
+
+function checkAnswer(questionIndex,choiceIndex,button){
+
+const result =
+document.getElementById(`result-${questionIndex}`);
+
+if(result.innerHTML !== ""){
+return;
+}
+
+const question = questions[questionIndex];
+
+button.parentElement
+.querySelectorAll(".option")
+.forEach(btn=>btn.disabled=true);
+
+if(choiceIndex === question.answer){
+
+score += 10;
+
+result.innerHTML =
+'<div class="correct">⭕ 正解！ よくできました！</div>';
+
+}else{
+
+result.innerHTML =
+`<div class="incorrect">
+❌ 不正解！<br>
+正解は「${question.choices[question.answer]}」です。
+</div>`;
+}
+
+answered++;
+
+if(answered === questions.length){
+document.getElementById("finishButton").disabled=false;
+}
+
+}
+
+document.getElementById("finishButton")
+.addEventListener("click",showResult);
+
+function showResult(){
+
+let msg="";
+
+if(score < 60){
+msg="不合格、夏休みは算数合宿ですね";
+}
+else if(score === 60){
+msg="合格、もう少し勉強が必要ですね";
+}
+else if(score === 70){
+msg="合格、もう少し理解を深めましょう";
+}
+else if(score === 80){
+msg="合格、他の勉強を始めましょう";
+}
+else if(score === 90){
+msg="合格、このあと、スマホしても怒られないでしょう";
+}
+else if(score === 100){
+msg="合格、あなたは縄文・弥生マスターです！すぐに土器づくりを始めましょう";
+}
+
+document.getElementById("score").innerText =
+score + "点";
+
+document.getElementById("message").innerText =
+msg;
+
+document.getElementById("detail").innerText =
+`${score/10}問 / 10問 正解`;
+
+document.getElementById("resultPage").style.display =
+"block";
+
+document.getElementById("resultPage")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+</script>
+
+</body>
+</html>
